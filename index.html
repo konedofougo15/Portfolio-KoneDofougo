@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koné Dofougo — Senior Product & UI/UX Designer</title>
+  <meta name="description" content="Portfolio de Koné Dofougo, Lead Product & UI/UX Designer spécialisé dans la création d'interfaces web, applications mobiles, dashboards et portails civiques d'exception.">
+
+  <!-- Favicon & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-container">
+      <a href="#home" class="logo" id="logo-btn">
+        <img src="assets/logo.png" alt="Logo Dofougo" class="logo-img">
+        <span>Dofougo</span>
+      </a>
+
+      <nav class="nav-links-desktop">
+        <ul class="nav-links">
+          <li><a href="#home" class="nav-link active" data-route="home">Accueil</a></li>
+          <li><a href="#projects" class="nav-link" data-route="projects">Projets</a></li>
+          <li><a href="#process" class="nav-link" data-route="process">Processus</a></li>
+          <li><a href="#about" class="nav-link" data-route="about">À propos</a></li>
+          <li><a href="#contact" class="nav-link" data-route="contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="#contact" class="btn btn-primary" id="header-cta-btn">
+          <span>Discutons</span>
+          <i data-lucide="arrow-up-right" style="width: 18px; height: 18px;"></i>
+        </a>
+        <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Toggle Navigation">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <div class="mobile-drawer" id="mobile-drawer">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div class="logo">
+        <img src="assets/logo.png" alt="Logo Dofougo" class="logo-img">
+        <span>Dofougo</span>
+      </div>
+      <button id="drawer-close" style="background: none; font-size: 1.5rem; color: var(--text-primary);">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem;">
+      <li><a href="#home" class="mobile-nav-link" data-route="home">Accueil</a></li>
+      <li><a href="#projects" class="mobile-nav-link" data-route="projects">Projets</a></li>
+      <li><a href="#process" class="mobile-nav-link" data-route="process">Processus</a></li>
+      <li><a href="#about" class="mobile-nav-link" data-route="about">À propos</a></li>
+      <li><a href="#contact" class="mobile-nav-link" data-route="contact">Contact</a></li>
+    </ul>
+    <div style="margin-top: auto;">
+      <a href="#contact" class="btn btn-primary" style="width: 100%;">
+        <span>Discutons de votre projet</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN APP VIEWS CONTAINER -->
+  <main id="app-viewport">
+
+    <!-- ===================================================================
+         VIEW 1: HOMEPAGE
+         =================================================================== -->
+    <div class="app-view active" id="view-home">
+
+      <!-- Hero Section -->
+      <section class="section hero-section">
+        <div class="container">
+          <div class="hero-grid">
+            <div class="hero-content">
+              <div class="hero-tag">
+                <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+                <span>Senior Product & UI/UX Designer</span>
+              </div>
+              <h1 class="hero-title">
+                Salut, Je suis <span>Koné Dofougo</span>
+              </h1>
+              <p class="hero-description">
+                Spécialisé dans la conception d'expériences numériques intuitives, de systèmes de design évolutifs et d'interfaces produit d'exception qui captivent et convertissent.
+              </p>
+              <div class="hero-actions">
+                <a href="#projects" class="btn btn-primary" data-route="projects">
+                  <span>Voir mes projets</span>
+                  <i data-lucide="arrow-down-right" style="width: 18px; height: 18px;"></i>
+                </a>
+                <a href="#contact" class="btn btn-secondary" id="hero-contact-btn">
+                  <span>Me contacter</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="hero-image-wrapper">
+              <div class="hero-image-card">
+                <img src="assets/avatar.png" alt="Koné Dofougo — Product Designer" id="hero-avatar">
+                <div class="hero-floating-badge">
+                  <div class="badge-icon">
+                    <i data-lucide="award"></i>
+                  </div>
+                  <div>
+                    <h4 style="font-size: 0.9rem; margin-bottom: 0.1rem;">2 ans d'Expérience</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Product & UI/UX Design</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Project Showcase Banner -->
+      <section class="section featured-section">
+        <div class="container">
+          <div class="featured-card">
+            <div>
+              <div class="project-category">Projet En Vedette</div>
+              <h2 style="margin-bottom: 1rem;">Site Officiel de la Mairie d'Adjamé</h2>
+              <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Portail civique numérique complet digitalisant les démarches administratives pour plus de 500 000 citoyens avec les couleurs nationales Vert & Orange.
+              </p>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;">
+                <span class="filter-tab" style="pointer-events: none; font-size: 0.8rem;">Secteur Public</span>
+                <span class="filter-tab" style="pointer-events: none; font-size: 0.8rem;">Démarches Civiques</span>
+                <span class="filter-tab" style="pointer-events: none; font-size: 0.8rem;">UX Accessibility</span>
+              </div>
+              <button class="btn btn-primary open-project-btn" data-project-id="municipality-website">
+                <span>Découvrir l'étude de cas</span>
+                <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+              </button>
+            </div>
+
+            <div class="featured-mockup" style="padding: 0; background: transparent; overflow: hidden; max-height: 320px;">
+              <img src="assets/adjame_hero.png" alt="Site Officiel Mairie d'Adjamé - Mockup Laptop" style="width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-lg);">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mon Processus de Création Section -->
+      <section class="section" id="process-section" style="background-color: var(--bg-secondary);">
+        <div class="container">
+          <div style="text-align: center; max-width: 650px; margin: 0 auto 3rem auto;">
+            <div class="project-category">Méthodologie</div>
+            <h2>Mon Processus de Création</h2>
+            <p>Une approche rigoureuse et itérative pour transformer des problèmes complexes en produits numériques simples et désirables.</p>
+          </div>
+
+          <div class="process-grid" id="process-steps-container">
+            <!-- Rendered dynamically by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Selected Projects Preview Section -->
+      <section class="section" id="projects-section">
+        <div class="container">
+          <div style="text-align: center; max-width: 650px; margin: 0 auto;">
+            <div class="project-category">Portfolio</div>
+            <h2>Projets Sélectionnés</h2>
+            <p>Découvrez une sélection de mes réalisations récentes en design produit, mobile et interfaces d'entreprise.</p>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="filter-tabs" id="home-filter-tabs">
+            <!-- Filter pills populated via app.js -->
+          </div>
+
+          <!-- Portfolio Grid -->
+          <div class="projects-grid" id="home-projects-grid">
+            <!-- Cards populated via app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Dark CTA Banner Section -->
+      <section class="container">
+        <div class="cta-banner">
+          <h2>Vous avez un projet ? Discutons de votre projet !</h2>
+          <p>Disponible pour de nouvelles opportunités de conception de produits, audits UX ou partenariats créatifs.</p>
+          <a href="#contact" class="btn btn-primary" style="background-color: #FFFFFF; color: var(--bg-dark);">
+            <span>Discutons-en</span>
+            <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- Testimonials / About Section ("Qu'est-ce qu'on dit ?") -->
+      <section class="section" id="about-section" style="background-color: var(--bg-secondary);">
+        <div class="container">
+          <div style="text-align: center; max-width: 650px; margin: 0 auto;">
+            <div class="project-category">Témoignages</div>
+            <h2>Qu'est-ce qu'on dit ?</h2>
+            <p>Ce que pensent les fondateurs, directeurs produit et équipes d'ingénierie avec qui j'ai collaboré.</p>
+          </div>
+
+          <div class="testimonials-grid" id="testimonials-container">
+            <!-- Testimonials populated via app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Form Section -->
+      <section class="section" id="contact-section">
+        <div class="container">
+          <div style="text-align: center; max-width: 650px; margin: 0 auto 2rem auto;">
+            <div class="project-category">Contact</div>
+            <h2>Discutons de votre projet</h2>
+            <p>Vous avez une idée de produit ou besoin d'une refonte ? Envoyez-moi un message et je vous répondrai sous 24 heures.</p>
+          </div>
+
+          <div class="contact-grid" id="contact-form-container">
+            <!-- Contact section template populated via app.js -->
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /#view-home -->
+
+    <!-- ===================================================================
+         VIEW 2: PROJECTS LISTING PAGE
+         =================================================================== -->
+    <div class="app-view" id="view-projects" style="display: none;">
+      <section class="section" style="padding-top: 3rem;">
+        <div class="container">
+          <div style="text-align: center; max-width: 700px; margin: 0 auto 3rem auto;">
+            <div class="project-category">Galerie Complète</div>
+            <h1 style="margin-bottom: 1rem;">Tous les Projets</h1>
+            <p>Explorez l'ensemble de mes travaux en mobile app, dashboards d'analyse, plateformes saas, sites web et portails municipaux.</p>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="filter-tabs" id="projects-page-filter-tabs">
+            <!-- Filter pills populated via app.js -->
+          </div>
+
+          <!-- Portfolio Grid -->
+          <div class="projects-grid" id="all-projects-grid">
+            <!-- Cards populated via app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Dark CTA Banner Section -->
+      <section class="container">
+        <div class="cta-banner">
+          <h2>Prêt à donner vie à votre prochain projet ?</h2>
+          <p>Contactez-moi dès aujourd'hui pour échanger sur vos besoins et planifier une première session de cadrage.</p>
+          <a href="#contact" class="btn btn-primary" style="background-color: #FFFFFF; color: var(--bg-dark);">
+            <span>Me contacter</span>
+            <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- Reusable Contact Section -->
+      <section class="section">
+        <div class="container" id="projects-contact-container">
+          <!-- Reusable contact card -->
+        </div>
+      </section>
+    </div><!-- /#view-projects -->
+
+    <!-- ===================================================================
+         VIEW 3: PROJECT DETAILS PAGE (Case Study Template)
+         =================================================================== -->
+    <div class="app-view" id="view-project-detail" style="display: none;">
+      <div id="project-detail-content">
+        <!-- Rendered dynamically by app.js based on selected project ID -->
+      </div>
+    </div><!-- /#view-project-detail -->
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="#home" class="logo" style="margin-bottom: 0.75rem;">
+            <img src="assets/logo.png" alt="Logo Dofougo" class="logo-img">
+            <span>Dofougo</span>
+          </a>
+          <p style="font-size: 0.9rem; max-width: 360px; margin-top: 0.5rem;">
+            Conception d'interfaces numériques sur mesure pour les entreprises ambitieuses et les institutions.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 2.5rem; flex-wrap: wrap;">
+          <div>
+            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem;">Navigation</h4>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
+              <li><a href="#home" data-route="home">Accueil</a></li>
+              <li><a href="#projects" data-route="projects">Projets</a></li>
+              <li><a href="#process" data-route="process">Processus</a></li>
+              <li><a href="#about" data-route="about">À propos</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem;">Réseaux</h4>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
+              <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a></li>
+              <li><a href="https://dribbble.com" target="_blank" rel="noopener">Dribbble</a></li>
+              <li><a href="https://behance.net" target="_blank" rel="noopener">Behance</a></li>
+              <li><a href="https://twitter.com" target="_blank" rel="noopener">Twitter / X</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2024 Koné Dofougo. Tous droits réservés. Design Portfolio Master Reference.</p>
+        <button class="back-to-top" id="back-to-top" aria-label="Retour en haut">
+          <i data-lucide="arrow-up" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
