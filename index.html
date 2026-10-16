@@ -30,6 +30,7 @@
       <nav class="nav-links-desktop">
         <ul class="nav-links">
           <li><a href="#home" class="nav-link active" data-route="home">Accueil</a></li>
+          <li><a href="#figma-app" class="nav-link" data-route="figma-app">Dashboard SaaS (Figma)</a></li>
           <li><a href="#projects" class="nav-link" data-route="projects">Projets</a></li>
           <li><a href="#process" class="nav-link" data-route="process">Processus</a></li>
           <li><a href="#about" class="nav-link" data-route="about">À propos</a></li>
@@ -63,6 +64,7 @@
     </div>
     <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem;">
       <li><a href="#home" class="mobile-nav-link" data-route="home">Accueil</a></li>
+      <li><a href="#figma-app" class="mobile-nav-link" data-route="figma-app">Dashboard SaaS (Figma)</a></li>
       <li><a href="#projects" class="mobile-nav-link" data-route="projects">Projets</a></li>
       <li><a href="#process" class="mobile-nav-link" data-route="process">Processus</a></li>
       <li><a href="#about" class="mobile-nav-link" data-route="about">À propos</a></li>
@@ -277,13 +279,141 @@
     </div><!-- /#view-projects -->
 
     <!-- ===================================================================
-         VIEW 3: PROJECT DETAILS PAGE (Case Study Template)
+         VIEW 4: FIGMA SAAS DASHBOARD REPLICA (14 SCREENS SYSTEM)
          =================================================================== -->
-    <div class="app-view" id="view-project-detail" style="display: none;">
-      <div id="project-detail-content">
-        <!-- Rendered dynamically by app.js based on selected project ID -->
+    <div class="app-view" id="view-figma-app" style="display: none;">
+      <div class="figma-app-wrapper">
+        
+        <!-- Sidebar Navigation (Figma Reference) -->
+        <aside class="figma-sidebar">
+          <div class="figma-sidebar-header">
+            <div class="brand-icon">F</div>
+            <div>
+              <h3 class="brand-title">Figma UI SaaS</h3>
+              <p class="brand-subtitle">System Design V2.4</p>
+            </div>
+          </div>
+
+          <div class="figma-menu-group">
+            <div class="figma-menu-label">Menu Principal</div>
+            <ul class="figma-menu-list">
+              <li class="figma-menu-item active" data-figma-tab="overview">
+                <a href="#overview"><i data-lucide="layout-dashboard"></i> <span>Tableau de Bord</span></a>
+              </li>
+              <li class="figma-menu-item" data-figma-tab="analytics">
+                <a href="#analytics"><i data-lucide="bar-chart-2"></i> <span>Analytics & KPI</span></a>
+              </li>
+              <li class="figma-menu-item" data-figma-tab="datatable">
+                <a href="#datatable"><i data-lucide="table"></i> <span>Données & Entrées</span> <span class="badge-count">7</span></a>
+              </li>
+              <li class="figma-menu-item" data-figma-tab="stepper">
+                <a href="#stepper"><i data-lucide="file-text"></i> <span>Formulaire Stepper</span></a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="figma-menu-group">
+            <div class="figma-menu-label">Administration</div>
+            <ul class="figma-menu-list">
+              <li class="figma-menu-item" data-figma-tab="settings">
+                <a href="#settings"><i data-lucide="settings"></i> <span>Paramètres & Profil</span></a>
+              </li>
+              <li class="figma-menu-item">
+                <a href="#notifications" id="figma-open-notifications"><i data-lucide="bell"></i> <span>Notifications</span> <span class="badge-count" style="background: #FEE2E2; color: #B91C1C;">3</span></a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="figma-sidebar-footer">
+            <div class="figma-user-profile-bar" id="figma-trigger-user-drawer">
+              <img src="assets/avatar.png" alt="Utilisateur Connecté">
+              <div style="flex: 1; min-width: 0;">
+                <p class="figma-user-info-name">Koné Dofougo</p>
+                <p class="figma-user-info-role">Lead Product Designer</p>
+              </div>
+              <i data-lucide="chevron-right" style="width: 16px; height: 16px; color: #94A3B8;"></i>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="figma-main-content">
+          
+          <!-- Top Header -->
+          <header class="figma-top-bar">
+            <div class="figma-search-box">
+              <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+              <input type="text" id="figma-global-search" placeholder="Rechercher une donnée, utilisateur (Cmd + K)...">
+            </div>
+
+            <div class="figma-header-actions">
+              <button class="figma-icon-btn" title="Alertes Sécurité">
+                <i data-lucide="shield-alert" style="width: 18px; height: 18px;"></i>
+              </button>
+              <button class="figma-icon-btn" title="Notifications" id="topbar-bell-btn">
+                <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                <span class="notification-dot"></span>
+              </button>
+              <button class="figma-btn figma-btn-primary" id="figma-action-new-entry">
+                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                <span>+ Nouvelle Entrée</span>
+              </button>
+            </div>
+          </header>
+
+          <!-- Alert Notification Banner (Screen 7 Figma) -->
+          <div class="figma-alert-banner" id="figma-alert-banner">
+            <div>
+              <i data-lucide="alert-triangle" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-bottom; margin-right: 0.4rem;"></i>
+              <strong>Attention :</strong> Une mise à jour critique de sécurité est disponible pour votre infrastructure. <span class="alert-link" id="figma-alert-link">Voir le journal d'activité</span>
+            </div>
+            <button id="figma-close-alert" style="background: none; border: none; color: #991B1B; cursor: pointer; font-size: 1.1rem;">&times;</button>
+          </div>
+
+          <!-- Page Header & View Switcher Tabs -->
+          <div class="figma-page-header">
+            <div>
+              <h1 class="figma-page-title" id="figma-screen-title">Vue d'ensemble — Tableau de Bord</h1>
+              <p class="figma-page-subtitle" id="figma-screen-subtitle">Reproduction fidèle des 14 maquettes Figma (Analytics, Data Tables, Form Stepper & Settings)</p>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="figma-btn figma-btn-outline" id="figma-export-btn">
+                <i data-lucide="download" style="width: 16px; height: 16px;"></i>
+                <span>Exporter CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabs bar corresponding to the 14 Figma screens -->
+          <div class="figma-view-tabs">
+            <button class="figma-tab-btn active" data-tab-target="overview"><i data-lucide="layout"></i> Tableau de Bord (Écrans 1-6)</button>
+            <button class="figma-tab-btn" data-tab-target="analytics"><i data-lucide="trending-up"></i> Analytics & Données (Écrans 4-6)</button>
+            <button class="figma-tab-btn" data-tab-target="datatable"><i data-lucide="list"></i> Tableaux & Grille (Écrans 7-9)</button>
+            <button class="figma-tab-btn" data-tab-target="stepper"><i data-lucide="layers"></i> Formulaire Stepper (Écran 12)</button>
+            <button class="figma-tab-btn" data-tab-target="settings"><i data-lucide="user"></i> Profil & Paramètres (Écran 13)</button>
+          </div>
+
+          <!-- Dynamic View Body -->
+          <div class="figma-view-body" id="figma-dynamic-body">
+            <!-- Rendered dynamically by js/app.js -->
+          </div>
+        </main>
       </div>
-    </div><!-- /#view-project-detail -->
+
+      <!-- Slide-over Drawer Backdrop & Panel -->
+      <div class="figma-drawer-backdrop" id="figma-drawer-backdrop"></div>
+      <div class="figma-drawer-panel" id="figma-drawer-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #E2E8F0; margin-bottom: 1.25rem;">
+          <h3 style="margin: 0; font-size: 1.1rem; color: #0F172A;">Détails de l'Utilisateur</h3>
+          <button id="figma-drawer-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748B;">&times;</button>
+        </div>
+        <div id="figma-drawer-content">
+          <!-- Populated by app.js -->
+        </div>
+      </div>
+    </div><!-- /#view-figma-app -->
+
 
   </main>
 

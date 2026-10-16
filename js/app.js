@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewHome = document.getElementById('view-home');
   const viewProjects = document.getElementById('view-projects');
   const viewProjectDetail = document.getElementById('view-project-detail');
+  const viewFigmaApp = document.getElementById('view-figma-app');
   const projectDetailContent = document.getElementById('project-detail-content');
 
   // Categories list
@@ -57,18 +58,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Hide all views first
-    viewHome.style.display = 'none';
-    viewProjects.style.display = 'none';
-    viewProjectDetail.style.display = 'none';
+    if (viewHome) viewHome.style.display = 'none';
+    if (viewProjects) viewProjects.style.display = 'none';
+    if (viewProjectDetail) viewProjectDetail.style.display = 'none';
+    if (viewFigmaApp) viewFigmaApp.style.display = 'none';
 
     if (route === 'home') {
-      viewHome.style.display = 'block';
+      if (viewHome) viewHome.style.display = 'block';
     } else if (route === 'projects') {
-      viewProjects.style.display = 'block';
+      if (viewProjects) viewProjects.style.display = 'block';
       renderProjectsPage();
+    } else if (route === 'figma-app') {
+      if (viewFigmaApp) viewFigmaApp.style.display = 'block';
+      initFigmaDashboardApp();
     } else if (route === 'project-detail' && params.id) {
       state.currentProjectId = params.id;
-      viewProjectDetail.style.display = 'block';
+      if (viewProjectDetail) viewProjectDetail.style.display = 'block';
       renderProjectDetail(params.id);
     }
 
@@ -85,6 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
       navigateTo('home');
     } else if (hash === 'projects') {
       navigateTo('projects');
+    } else if (hash === 'figma-app') {
+      navigateTo('figma-app');
     } else if (hash.startsWith('project/')) {
       const projectId = hash.replace('project/', '');
       navigateTo('project-detail', { id: projectId });
@@ -523,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div>
             <h4 style="font-size: 0.95rem; margin-bottom: 0.1rem;">Email Direct</h4>
-            <p style="margin: 0;"><a href="mailto:kone.dofougo@example.com" style="color: var(--accent-copper); font-weight: 600;">kone.dofougo@example.com</a></p>
+            <p style="margin: 0;"><a href="mailto:konedof0512@gmail.com" style="color: var(--accent-copper); font-weight: 600;">konedof0512@gmail.com</a></p>
           </div>
         </div>
 
@@ -533,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div>
             <h4 style="font-size: 0.95rem; margin-bottom: 0.1rem;">Localisation</h4>
-            <p style="margin: 0;">Paris, France & Abidjan, Côte d'Ivoire (Remote & Hybride)</p>
+            <p style="margin: 0;"> Abidjan, Côte d'Ivoire (Remote & Hybride)</p>
           </div>
         </div>
 
@@ -641,11 +648,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-route]').forEach(link => {
     link.addEventListener('click', (e) => {
       const targetRoute = link.dataset.route;
-      if (['home', 'projects'].includes(targetRoute)) {
+      if (['home', 'projects', 'figma-app'].includes(targetRoute)) {
         e.preventDefault();
         window.location.hash = targetRoute;
         navigateTo(targetRoute);
-        if (mobileDrawer.classList.contains('open')) toggleMobileMenu();
+        if (mobileDrawer && mobileDrawer.classList.contains('open')) toggleMobileMenu();
       }
     });
   });
@@ -667,8 +674,629 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ------------------------------------------------------------------------
+     FIGMA SAAS APPLICATION DASHBOARD ENGINE
+     ------------------------------------------------------------------------ */
+  let figmaState = {
+    currentTab: 'overview',
+    searchQuery: '',
+    statusFilter: 'all',
+    currentFormStep: 1
+  };
+
+  function initFigmaDashboardApp() {
+    setupFigmaEventListeners();
+    renderFigmaTabContent(figmaState.currentTab);
+  }
+
+  function setupFigmaEventListeners() {
+    // View Tab Switcher Buttons
+    document.querySelectorAll('.figma-tab-btn, .figma-menu-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = btn.dataset.tabTarget || btn.dataset.figmaTab;
+        if (target) {
+          e.preventDefault();
+          figmaState.currentTab = target;
+          
+          // Update Tab Buttons UI
+          document.querySelectorAll('.figma-tab-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.tabTarget === target);
+          });
+          document.querySelectorAll('.figma-menu-item').forEach(m => {
+            m.classList.toggle('active', m.dataset.figmaTab === target);
+          });
+
+          renderFigmaTabContent(target);
+        }
+      });
+    });
+
+    // Alert Banner Close
+    const closeAlertBtn = document.getElementById('figma-close-alert');
+    const alertBanner = document.getElementById('figma-alert-banner');
+    if (closeAlertBtn && alertBanner) {
+      closeAlertBtn.onclick = () => alertBanner.style.display = 'none';
+    }
+
+    // Drawer Backdrop & Close
+    const drawerBackdrop = document.getElementById('figma-drawer-backdrop');
+    const drawerPanel = document.getElementById('figma-drawer-panel');
+    const drawerClose = document.getElementById('figma-drawer-close');
+
+    function closeDrawer() {
+      if (drawerPanel) drawerPanel.classList.remove('open');
+      if (drawerBackdrop) drawerBackdrop.style.display = 'none';
+    }
+
+    if (drawerClose) drawerClose.onclick = closeDrawer;
+    if (drawerBackdrop) drawerBackdrop.onclick = closeDrawer;
+
+    // Trigger Drawer from User Bar
+    const userBar = document.getElementById('figma-trigger-user-drawer');
+    if (userBar) {
+      userBar.onclick = () => openFigmaUserDrawer(DASHBOARD_DATA.tableData[0]);
+    }
+
+    // Export CSV Mock Action
+    const exportBtn = document.getElementById('figma-export-btn');
+    if (exportBtn) {
+      exportBtn.onclick = () => {
+        alert("Export CSV des 14 maquettes Figma généré avec succès !");
+      };
+    }
+  }
+
+  function renderFigmaTabContent(tab) {
+    const container = document.getElementById('figma-dynamic-body');
+    const screenTitle = document.getElementById('figma-screen-title');
+    const screenSubtitle = document.getElementById('figma-screen-subtitle');
+    if (!container) return;
+
+    if (tab === 'overview') {
+      if (screenTitle) screenTitle.textContent = "Vue d'ensemble — Tableau de Bord";
+      if (screenSubtitle) screenSubtitle.textContent = "Synthèse globale des performances, KPI métriques et revenus mensuels (Écrans 1 à 6).";
+      renderOverviewTab(container);
+    } else if (tab === 'analytics') {
+      if (screenTitle) screenTitle.textContent = "Analytics & Performance";
+      if (screenSubtitle) screenSubtitle.textContent = "Graphiques de croissance, évolution du trafic et répartition par secteur (Écrans 4 à 6).";
+      renderAnalyticsTab(container);
+    } else if (tab === 'datatable') {
+      if (screenTitle) screenTitle.textContent = "Gestion des Données & Grille";
+      if (screenSubtitle) screenSubtitle.textContent = "Tableau dynamique avec filtres multi-critères, statut et pagination (Écrans 7 à 9).";
+      renderDataTableTab(container);
+    } else if (tab === 'stepper') {
+      if (screenTitle) screenTitle.textContent = "Formulaire Multi-Étapes (Stepper)";
+      if (screenSubtitle) screenSubtitle.textContent = "Flux d'onboarding et de saisie guidée avec barre de progression (Écran 12).";
+      renderStepperTab(container);
+    } else if (tab === 'settings') {
+      if (screenTitle) screenTitle.textContent = "Profil & Paramètres Système";
+      if (screenSubtitle) screenSubtitle.textContent = "Configuration du compte, sécurité et préférences de l'application (Écran 13).";
+      renderSettingsTab(container);
+    }
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  /* --- SUB-VIEW 1: OVERVIEW (KPIs + BAR CHART + DONUT) --- */
+  function renderOverviewTab(container) {
+    container.innerHTML = `
+      <!-- KPI Row -->
+      <div class="figma-kpi-grid">
+        ${DASHBOARD_DATA.kpis.map(kpi => `
+          <div class="figma-kpi-card">
+            <div class="figma-kpi-top">
+              <span class="figma-kpi-title">${kpi.label}</span>
+              <div class="figma-kpi-icon ${kpi.color}">
+                <i data-lucide="${kpi.icon}" style="width: 18px; height: 18px;"></i>
+              </div>
+            </div>
+            <div class="figma-kpi-value">${kpi.value}</div>
+            <div class="figma-kpi-footer">
+              <span class="figma-trend ${kpi.trendUp ? 'up' : 'down'}">
+                <i data-lucide="${kpi.trendUp ? 'arrow-up-right' : 'arrow-down-right'}" style="width: 12px; height: 12px;"></i>
+                ${kpi.trend}
+              </span>
+              <span class="figma-kpi-subtext">${kpi.subtext}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Charts Section -->
+      <div class="figma-charts-grid">
+        <!-- SVG Grouped Bar Chart -->
+        <div class="figma-card">
+          <div class="figma-card-header">
+            <div>
+              <h3 class="figma-card-title">Évolution des Ventes vs Objectifs</h3>
+              <p style="font-size: 0.8rem; color: #64748B; margin: 0;">Comparatif mensuel en milliers d'euros</p>
+            </div>
+            <div class="figma-filter-group">
+              <span style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: #2563EB; font-weight: 600;"><span style="width: 10px; height: 10px; background: #2563EB; border-radius: 2px;"></span> Ventes</span>
+              <span style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: #93C5FD; font-weight: 600;"><span style="width: 10px; height: 10px; background: #93C5FD; border-radius: 2px;"></span> Cible</span>
+            </div>
+          </div>
+          ${generateSVGBarChart(DASHBOARD_DATA.charts.monthlyBarChart)}
+        </div>
+
+        <!-- SVG Donut Chart -->
+        <div class="figma-card">
+          <div class="figma-card-header">
+            <h3 class="figma-card-title">Répartition Réseau</h3>
+          </div>
+          <div class="figma-donut-chart-wrapper">
+            ${generateSVGDonutChart(DASHBOARD_DATA.charts.donutDistribution)}
+            <ul class="figma-legend-list">
+              ${DASHBOARD_DATA.charts.donutDistribution.map(item => `
+                <li class="figma-legend-item">
+                  <span class="figma-legend-item-label">
+                    <span class="figma-legend-dot" style="background-color: ${item.color};"></span>
+                    ${item.category}
+                  </span>
+                  <strong style="color: #0F172A;">${item.percentage}%</strong>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Recent Table Preview -->
+      <div class="figma-card">
+        <div class="figma-card-header">
+          <h3 class="figma-card-title">Dernières Transactions Traitées</h3>
+          <button class="figma-btn figma-btn-outline" id="overview-go-datatable" style="font-size: 0.8rem;">
+            <span>Voir tout le tableau</span>
+            <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+          </button>
+        </div>
+        ${generateTableHTML(DASHBOARD_DATA.tableData.slice(0, 4))}
+      </div>
+    `;
+
+    const btnGoTable = document.getElementById('overview-go-datatable');
+    if (btnGoTable) {
+      btnGoTable.onclick = () => {
+        figmaState.currentTab = 'datatable';
+        renderFigmaTabContent('datatable');
+      };
+    }
+
+    attachTableRowClickListeners();
+  }
+
+  /* --- SUB-VIEW 2: ANALYTICS (SVG LINE CHART WITH GRADIENT) --- */
+  function renderAnalyticsTab(container) {
+    container.innerHTML = `
+      <div class="figma-card" style="margin-bottom: 1.5rem;">
+        <div class="figma-card-header">
+          <div>
+            <h3 class="figma-card-title">Courbe de Croissance des Inscriptions (Septembre 2026)</h3>
+            <p style="font-size: 0.8rem; color: #64748B; margin: 0;">Progression cumulée des utilisateurs certifiés</p>
+          </div>
+          <span class="figma-badge figma-badge-success">+24.8% ce mois</span>
+        </div>
+        ${generateSVGLineChart(DASHBOARD_DATA.charts.lineGrowthChart)}
+      </div>
+
+      <div class="figma-kpi-grid">
+        <div class="figma-card">
+          <h4 style="font-size: 0.85rem; color: #64748B; margin-bottom: 0.5rem;">Taux de Rétention Utilisateurs</h4>
+          <p style="font-size: 1.5rem; font-weight: 800; color: #0F172A; margin: 0 0 0.5rem;">88.4%</p>
+          <div style="width: 100%; height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden;">
+            <div style="width: 88.4%; height: 100%; background: #10B981; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="figma-card">
+          <h4 style="font-size: 0.85rem; color: #64748B; margin-bottom: 0.5rem;">Temps Moyen de Traitement</h4>
+          <p style="font-size: 1.5rem; font-weight: 800; color: #0F172A; margin: 0 0 0.5rem;">1.2 min</p>
+          <div style="width: 100%; height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden;">
+            <div style="width: 70%; height: 100%; background: #3B82F6; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="figma-card">
+          <h4 style="font-size: 0.85rem; color: #64748B; margin-bottom: 0.5rem;">Satisfaction NPS</h4>
+          <p style="font-size: 1.5rem; font-weight: 800; color: #0F172A; margin: 0 0 0.5rem;">92 / 100</p>
+          <div style="width: 100%; height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden;">
+            <div style="width: 92%; height: 100%; background: #8B5CF6; border-radius: 4px;"></div>
+          </div>
+        </div>
+
+        <div class="figma-card">
+          <h4 style="font-size: 0.85rem; color: #64748B; margin-bottom: 0.5rem;">Disponibilité Serveur (Uptime)</h4>
+          <p style="font-size: 1.5rem; font-weight: 800; color: #0F172A; margin: 0 0 0.5rem;">99.98%</p>
+          <div style="width: 100%; height: 8px; background: #E2E8F0; border-radius: 4px; overflow: hidden;">
+            <div style="width: 99.98%; height: 100%; background: #059669; border-radius: 4px;"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /* --- SUB-VIEW 3: DATA TABLE WITH FILTERS --- */
+  function renderDataTableTab(container) {
+    const filteredData = DASHBOARD_DATA.tableData.filter(row => {
+      const matchSearch = row.user.name.toLowerCase().includes(figmaState.searchQuery.toLowerCase()) ||
+                          row.user.email.toLowerCase().includes(figmaState.searchQuery.toLowerCase()) ||
+                          row.id.toLowerCase().includes(figmaState.searchQuery.toLowerCase());
+      const matchStatus = figmaState.statusFilter === 'all' || row.statusType === figmaState.statusFilter;
+      return matchSearch && matchStatus;
+    });
+
+    container.innerHTML = `
+      <div class="figma-card">
+        <!-- Filter Toolbar -->
+        <div class="figma-table-toolbar">
+          <div class="figma-search-box" style="width: 280px;">
+            <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+            <input type="text" id="figma-table-search-input" value="${figmaState.searchQuery}" placeholder="Filtrer par nom, email...">
+          </div>
+
+          <div class="figma-filter-group">
+            <select class="figma-select" id="figma-status-select">
+              <option value="all" ${figmaState.statusFilter === 'all' ? 'selected' : ''}>Tous les statuts</option>
+              <option value="success" ${figmaState.statusFilter === 'success' ? 'selected' : ''}>Actif</option>
+              <option value="info" ${figmaState.statusFilter === 'info' ? 'selected' : ''}>En cours</option>
+              <option value="warning" ${figmaState.statusFilter === 'warning' ? 'selected' : ''}>En attente</option>
+              <option value="danger" ${figmaState.statusFilter === 'danger' ? 'selected' : ''}>Urgent</option>
+              <option value="neutral" ${figmaState.statusFilter === 'neutral' ? 'selected' : ''}>Suspendu</option>
+            </select>
+
+            <button class="figma-btn figma-btn-primary" id="btn-add-table-row">
+              <i data-lucide="user-plus" style="width: 16px; height: 16px;"></i>
+              <span>Ajouter</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Render Table -->
+        ${generateTableHTML(filteredData)}
+
+        <!-- Pagination Bar -->
+        <div class="figma-pagination">
+          <div>Affichage de <strong>1</strong> à <strong>${filteredData.length}</strong> sur <strong>${DASHBOARD_DATA.tableData.length}</strong> entrées</div>
+          <div class="figma-page-numbers">
+            <button class="figma-page-num active">1</button>
+            <button class="figma-page-num">2</button>
+            <button class="figma-page-num">3</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Bind Filter Events
+    const searchInput = document.getElementById('figma-table-search-input');
+    if (searchInput) {
+      searchInput.oninput = (e) => {
+        figmaState.searchQuery = e.target.value;
+        renderDataTableTab(container);
+      };
+    }
+
+    const statusSelect = document.getElementById('figma-status-select');
+    if (statusSelect) {
+      statusSelect.onchange = (e) => {
+        figmaState.statusFilter = e.target.value;
+        renderDataTableTab(container);
+      };
+    }
+
+    const btnAddRow = document.getElementById('btn-add-table-row');
+    if (btnAddRow) {
+      btnAddRow.onclick = () => {
+        figmaState.currentTab = 'stepper';
+        renderFigmaTabContent('stepper');
+      };
+    }
+
+    attachTableRowClickListeners();
+  }
+
+  /* --- SUB-VIEW 4: STEPPER FORM (SCREEN 12 FIGMA) --- */
+  function renderStepperTab(container) {
+    const step = figmaState.currentFormStep;
+    container.innerHTML = `
+      <!-- Stepper Header Bar -->
+      <div class="figma-stepper-bar">
+        <div class="figma-step-item ${step >= 1 ? (step > 1 ? 'completed' : 'active') : ''}">
+          <div class="figma-step-circle">${step > 1 ? '✓' : '1'}</div>
+          <span>1. Informations Personnelles</span>
+        </div>
+        <div style="flex: 1; height: 2px; background: #E2E8F0; margin: 0 0.5rem;"></div>
+        <div class="figma-step-item ${step >= 2 ? (step > 2 ? 'completed' : 'active') : ''}">
+          <div class="figma-step-circle">${step > 2 ? '✓' : '2'}</div>
+          <span>2. Rôle & Abonnements</span>
+        </div>
+        <div style="flex: 1; height: 2px; background: #E2E8F0; margin: 0 0.5rem;"></div>
+        <div class="figma-step-item ${step === 3 ? 'active' : ''}">
+          <div class="figma-step-circle">3</div>
+          <span>3. Confirmation</span>
+        </div>
+      </div>
+
+      <div class="figma-form-grid">
+        <div class="figma-card">
+          ${step === 1 ? `
+            <h3 style="font-size: 1.1rem; color: #0F172A; margin-bottom: 1.25rem;">Étape 1 : Identité & Contact</h3>
+            <div class="figma-form-group">
+              <label class="figma-form-label">Nom complet *</label>
+              <input type="text" class="figma-input" placeholder="ex: Amadou Diallo" value="Amadou Diallo">
+            </div>
+            <div class="figma-form-group">
+              <label class="figma-form-label">Adresse Email Professionnelle *</label>
+              <input type="email" class="figma-input" placeholder="a.diallo@entreprise.com" value="a.diallo@entreprise.com">
+            </div>
+            <div class="figma-form-group">
+              <label class="figma-form-label">Numéro de Téléphone</label>
+              <input type="tel" class="figma-input" placeholder="+225 07 00 00 00" value="+225 07 89 45 12">
+            </div>
+          ` : step === 2 ? `
+            <h3 style="font-size: 1.1rem; color: #0F172A; margin-bottom: 1.25rem;">Étape 2 : Configuration du Rôle & Forfait</h3>
+            <div class="figma-form-group">
+              <label class="figma-form-label">Rôle d'Accès Système</label>
+              <select class="figma-select" style="width: 100%;">
+                <option selected>Lead Designer / Product Owner</option>
+                <option>Administrateur Système</option>
+                <option>Développeur Senior</option>
+                <option>Gestionnaire de Contenu</option>
+              </select>
+            </div>
+            <div class="figma-form-group">
+              <label class="figma-form-label">Type d'Abonnement</label>
+              <select class="figma-select" style="width: 100%;">
+                <option selected>Enterprise VIP (1,200 € / mois)</option>
+                <option>Pro Annuel (450 € / an)</option>
+                <option>Starter (120 € / mois)</option>
+              </select>
+            </div>
+          ` : `
+            <h3 style="font-size: 1.1rem; color: #0F172A; margin-bottom: 1.25rem;">Étape 3 : Validation Finalisée</h3>
+            <div style="background: #DEF7EC; border: 1px solid #BCF0DA; border-radius: 8px; padding: 1.25rem; color: #03543F; margin-bottom: 1rem;">
+              <h4 style="margin: 0 0 0.5rem 0; font-size: 1rem;">✓ Données prêtes à être sauvegardées</h4>
+              <p style="margin: 0; font-size: 0.875rem;">Le compte utilisateur sera créé instantanément et recevra une invitation par e-mail.</p>
+            </div>
+          `}
+
+          <!-- Actions Footer -->
+          <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #E2E8F0;">
+            <button class="figma-btn figma-btn-outline" id="stepper-prev-btn" ${step === 1 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+              <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i> Précédent
+            </button>
+            <button class="figma-btn figma-btn-primary" id="stepper-next-btn">
+              ${step === 3 ? 'Enregistrer le Profil' : 'Suivant'} <i data-lucide="${step === 3 ? 'check' : 'arrow-right'}" style="width: 16px; height: 16px;"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Helper Card -->
+        <div class="figma-card" style="background: #F8FAFC; border-style: dashed;">
+          <h4 style="font-size: 0.95rem; color: #0F172A; margin-bottom: 0.75rem;">💡 Guide de Saisie Figma UI</h4>
+          <p style="font-size: 0.85rem; color: #64748B; line-height: 1.5;">
+            Ce composant reproduit fidèlement la structure de formulaire multi-étapes visible dans l'écran 12 de la maquette Figma.
+          </p>
+        </div>
+      </div>
+    `;
+
+    const prevBtn = document.getElementById('stepper-prev-btn');
+    const nextBtn = document.getElementById('stepper-next-btn');
+
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        if (figmaState.currentFormStep > 1) {
+          figmaState.currentFormStep--;
+          renderStepperTab(container);
+        }
+      };
+    }
+
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        if (figmaState.currentFormStep < 3) {
+          figmaState.currentFormStep++;
+          renderStepperTab(container);
+        } else {
+          alert("Nouveau profil utilisateur enregistré avec succès !");
+          figmaState.currentFormStep = 1;
+          figmaState.currentTab = 'datatable';
+          renderFigmaTabContent('datatable');
+        }
+      };
+    }
+  }
+
+  /* --- SUB-VIEW 5: USER SETTINGS (SCREEN 13 FIGMA) --- */
+  function renderSettingsTab(container) {
+    container.innerHTML = `
+      <div class="figma-card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <img src="assets/avatar.png" alt="Koné Dofougo" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid #2563EB;">
+          <div>
+            <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem; color: #0F172A;">Koné Dofougo</h3>
+            <p style="margin: 0 0 0.5rem 0; font-size: 0.875rem; color: #64748B;">Senior Lead Product & UX/UI Designer</p>
+            <span class="figma-badge figma-badge-success">Compte Vérifié</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="figma-card">
+        <h3 class="figma-card-title" style="margin-bottom: 1.25rem;">Paramètres du Compte</h3>
+        <div class="figma-form-group">
+          <label class="figma-form-label">Nom d'affichage</label>
+          <input type="text" class="figma-input" value="Koné Dofougo">
+        </div>
+        <div class="figma-form-group">
+          <label class="figma-form-label">Titre de poste</label>
+          <input type="text" class="figma-input" value="Senior Product Designer">
+        </div>
+        <button class="figma-btn figma-btn-primary" onclick="alert('Modifications sauvegardées !')">Enregistrer les modifications</button>
+      </div>
+    `;
+  }
+
+  /* --- HELPER HTML & SVG GENERATORS --- */
+  function generateTableHTML(data) {
+    if (!data.length) {
+      return `<p style="padding: 2rem; text-align: center; color: #94A3B8;">Aucune donnée trouvée.</p>`;
+    }
+
+    return `
+      <div class="figma-table-responsive">
+        <table class="figma-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Utilisateur</th>
+              <th>Rôle</th>
+              <th>Forfait</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.map(row => `
+              <tr class="figma-row-clickable" data-user-id="${row.id}">
+                <td style="font-weight: 700; color: #64748B;">${row.id}</td>
+                <td>
+                  <div class="figma-user-cell">
+                    <img src="${row.user.avatar}" alt="${row.user.name}">
+                    <div>
+                      <p class="figma-user-cell-name">${row.user.name}</p>
+                      <p class="figma-user-cell-email">${row.user.email}</p>
+                    </div>
+                  </div>
+                </td>
+                <td>${row.role}</td>
+                <td><span style="font-weight: 600; color: #334155;">${row.plan}</span></td>
+                <td style="font-weight: 700; color: #0F172A;">${row.amount}</td>
+                <td><span class="figma-badge figma-badge-${row.statusType}">${row.status}</span></td>
+                <td>
+                  <button class="figma-icon-btn figma-row-inspect-btn" data-user-id="${row.id}" style="width: 30px; height: 30px;">
+                    <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                  </button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function attachTableRowClickListeners() {
+    document.querySelectorAll('.figma-row-inspect-btn, .figma-row-clickable td:not(:last-child)').forEach(el => {
+      el.onclick = (e) => {
+        const row = el.closest('tr');
+        if (row) {
+          const uid = row.dataset.userId;
+          const userObj = DASHBOARD_DATA.tableData.find(u => u.id === uid);
+          if (userObj) openFigmaUserDrawer(userObj);
+        }
+      };
+    });
+  }
+
+  function openFigmaUserDrawer(userObj) {
+    const drawerPanel = document.getElementById('figma-drawer-panel');
+    const drawerBackdrop = document.getElementById('figma-drawer-backdrop');
+    const drawerContent = document.getElementById('figma-drawer-content');
+
+    if (drawerContent) {
+      drawerContent.innerHTML = `
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <img src="${userObj.user.avatar}" alt="${userObj.user.name}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 0.75rem; border: 3px solid #2563EB;">
+          <h3 style="margin: 0; font-size: 1.2rem; color: #0F172A;">${userObj.user.name}</h3>
+          <p style="margin: 0.25rem 0 0.5rem; font-size: 0.85rem; color: #64748B;">${userObj.user.email}</p>
+          <span class="figma-badge figma-badge-${userObj.statusType}">${userObj.status}</span>
+        </div>
+
+        <div style="background: #F8FAFC; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 0.875rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: #64748B;">Identifiant :</span>
+            <strong>${userObj.id}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: #64748B;">Rôle Système :</span>
+            <strong>${userObj.role}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span style="color: #64748B;">Forfait souscrit :</span>
+            <strong>${userObj.plan}</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #64748B;">Facturation :</span>
+            <strong>${userObj.amount}</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    if (drawerPanel) drawerPanel.classList.add('open');
+    if (drawerBackdrop) drawerBackdrop.style.display = 'block';
+  }
+
+  function generateSVGBarChart(data) {
+    const svgWidth = 600;
+    const svgHeight = 200;
+    const maxVal = 100000;
+    const barWidth = 18;
+
+    return `
+      <svg class="figma-bar-chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}">
+        <line x1="40" y1="160" x2="580" y2="160" stroke="#E2E8F0" stroke-width="1" />
+        <line x1="40" y1="100" x2="580" y2="100" stroke="#E2E8F0" stroke-dasharray="4" stroke-width="1" />
+        <line x1="40" y1="40" x2="580" y2="40" stroke="#E2E8F0" stroke-dasharray="4" stroke-width="1" />
+
+        ${data.map((item, idx) => {
+          const x = 50 + idx * 60;
+          const salesH = (item.sales / maxVal) * 140;
+          const targetH = (item.target / maxVal) * 140;
+
+          return `
+            <g class="bar-group">
+              <rect x="${x}" y="${160 - salesH}" width="${barWidth}" height="${salesH}" fill="#2563EB" rx="3" />
+              <rect x="${x + barWidth + 3}" y="${160 - targetH}" width="${barWidth}" height="${targetH}" fill="#93C5FD" rx="3" />
+              <text x="${x + 18}" y="180" font-size="11" fill="#64748B" text-anchor="middle">${item.month}</text>
+            </g>
+          `;
+        }).join('')}
+      </svg>
+    `;
+  }
+
+  function generateSVGDonutChart(data) {
+    return `
+      <svg width="140" height="140" viewBox="0 0 42 42" style="transform: rotate(-90deg);">
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#F1F5F9" stroke-width="5"></circle>
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#2563EB" stroke-width="5" stroke-dasharray="45 55" stroke-dashoffset="0"></circle>
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#10B981" stroke-width="5" stroke-dasharray="30 70" stroke-dashoffset="-45"></circle>
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#F59E0B" stroke-width="5" stroke-dasharray="15 85" stroke-dashoffset="-75"></circle>
+      </svg>
+    `;
+  }
+
+  function generateSVGLineChart(data) {
+    return `
+      <svg viewBox="0 0 600 200" style="width: 100%; height: 220px;">
+        <defs>
+          <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#2563EB" stop-opacity="0.3" />
+            <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
+        <path d="M 40 150 Q 150 120, 250 80 T 450 50 T 560 20 L 560 170 L 40 170 Z" fill="url(#chartGrad)" />
+        <path d="M 40 150 Q 150 120, 250 80 T 450 50 T 560 20" fill="none" stroke="#2563EB" stroke-width="3" />
+        <circle cx="560" cy="20" r="5" fill="#2563EB" stroke="#FFFFFF" stroke-width="2" />
+      </svg>
+    `;
+  }
+
+  /* ------------------------------------------------------------------------
      10. INITIALIZATION
      ------------------------------------------------------------------------ */
   renderHomepage();
   handleHashChange();
 });
+

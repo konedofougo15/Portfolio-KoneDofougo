@@ -292,3 +292,133 @@ const TESTIMONIALS_DATA = [
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
   }
 ];
+
+/* ==========================================================================
+   Figma SaaS Application Dashboard Reference Data
+   ========================================================================== */
+
+const DASHBOARD_DATA = {
+  kpis: [
+    { id: "rev", label: "Revenu Mensuel", value: "48,500 €", trend: "+14.2%", trendUp: true, subtext: "vs mois dernier", icon: "dollar-sign", color: "blue" },
+    { id: "users", label: "Utilisateurs Actifs", value: "12,480", trend: "+8.5%", trendUp: true, subtext: "vs mois dernier", icon: "users", color: "indigo" },
+    { id: "orders", label: "Commandes Traitées", value: "1,850", trend: "-2.4%", trendUp: false, subtext: "vs mois dernier", icon: "shopping-bag", color: "amber" },
+    { id: "conv", label: "Taux de Conversion", value: "4.35%", trend: "+1.1%", trendUp: true, subtext: "vs mois dernier", icon: "trending-up", color: "emerald" }
+  ],
+
+  charts: {
+    monthlyBarChart: [
+      { month: "Jan", sales: 42000, target: 35000, expenses: 18000 },
+      { month: "Fév", sales: 48000, target: 38000, expenses: 21000 },
+      { month: "Mar", sales: 55000, target: 40000, expenses: 24000 },
+      { month: "Avr", sales: 51000, target: 42000, expenses: 22000 },
+      { month: "Mai", sales: 62000, target: 45000, expenses: 26000 },
+      { month: "Juin", sales: 74000, target: 50000, expenses: 29000 },
+      { month: "Juil", sales: 69000, target: 52000, expenses: 28000 },
+      { month: "Août", sales: 81000, target: 55000, expenses: 31000 },
+      { month: "Sep", sales: 88000, target: 60000, expenses: 33000 }
+    ],
+
+    lineGrowthChart: [
+      { day: "01 Sep", value: 420 },
+      { day: "05 Sep", value: 580 },
+      { day: "10 Sep", value: 890 },
+      { day: "15 Sep", value: 750 },
+      { day: "20 Sep", value: 1120 },
+      { day: "25 Sep", value: 1350 },
+      { day: "30 Sep", value: 1680 }
+    ],
+
+    donutDistribution: [
+      { category: "Entreprises", percentage: 45, color: "#2563EB" },
+      { category: "Particuliers", percentage: 30, color: "#10B981" },
+      { category: "Partenaires", percentage: 15, color: "#F59E0B" },
+      { category: "Autres", percentage: 10, color: "#64748B" }
+    ]
+  },
+
+  tableData: [
+    {
+      id: "USR-9401",
+      user: { name: "Amadou Diallo", email: "a.diallo@company.com", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" },
+      role: "Lead Designer",
+      plan: "Enterprise VIP",
+      amount: "1,200 €",
+      date: "11 Sep 2026",
+      status: "Actif",
+      statusType: "success"
+    },
+    {
+      id: "USR-9402",
+      user: { name: "Sophie Martin", email: "s.martin@design.io", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80" },
+      role: "Product Manager",
+      plan: "Pro Annuel",
+      amount: "450 €",
+      date: "10 Sep 2026",
+      status: "En cours",
+      statusType: "info"
+    },
+    {
+      id: "USR-9403",
+      user: { name: "Kouassi Brou", email: "k.brou@mairie-adjame.ci", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" },
+      role: "Admin Système",
+      plan: "Gouvernement",
+      amount: "2,500 €",
+      date: "09 Sep 2026",
+      status: "Actif",
+      statusType: "success"
+    },
+    {
+      id: "USR-9404",
+      user: { name: "Claire Dubois", email: "c.dubois@aura-group.com", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80" },
+      role: "UX Researcher",
+      plan: "Starter",
+      amount: "120 €",
+      date: "08 Sep 2026",
+      status: "En attente",
+      statusType: "warning"
+    },
+    {
+      id: "USR-9405",
+      user: { name: "Ibrahim Koné", email: "i.kone@akilyum.com", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80" },
+      role: "Senior Developer",
+      plan: "Enterprise VIP",
+      amount: "1,200 €",
+      date: "07 Sep 2026",
+      status: "Urgent",
+      statusType: "danger"
+    },
+    {
+      id: "USR-9406",
+      user: { name: "Fatou Traoré", email: "f.traore@petroloyalty.net", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" },
+      role: "Marketing Director",
+      plan: "Pro Mensuel",
+      amount: "49 €",
+      date: "06 Sep 2026",
+      status: "Actif",
+      statusType: "success"
+    },
+    {
+      id: "USR-9407",
+      user: { name: "Jean-Paul Sartre", email: "jp.sartre@consulting.fr", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80" },
+      role: "Consultant Senior",
+      plan: "Starter",
+      amount: "120 €",
+      date: "05 Sep 2026",
+      status: "Suspendu",
+      statusType: "neutral"
+    }
+  ],
+
+  notifications: [
+    { id: 1, title: "Alerte Sécurité", message: "Nouvelle tentative de connexion depuis un appareil non reconnu.", time: "Il y a 5 min", type: "danger" },
+    { id: 2, title: "Nouveau Paiement", message: "Transaction de 1,200 € validée pour Amadou Diallo.", time: "Il y a 25 min", type: "success" },
+    { id: 3, title: "Rapport Hebdomadaire", message: "Le rapport d'analytics de la semaine est disponible.", time: "Il y a 2h", type: "info" }
+  ],
+
+  activities: [
+    { user: "Sophie Martin", action: "a modifié la configuration du projet", target: "SIMA Website UX/UI", time: "14:22" },
+    { user: "Kouassi Brou", action: "a exporté le tableau de données", target: "Demandes Administratives.csv", time: "11:05" },
+    { user: "Ibrahim Koné", action: "a ajouté un nouveau composant UI", target: "Design System V2", time: "09:40" }
+  ]
+};
+
